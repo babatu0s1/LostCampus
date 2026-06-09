@@ -1,0 +1,69 @@
+### 1. 浏览器页面也可以直接访问这个地址
+GET http://localhost:8080/items
+
+
+### 2. 查询全部失物 JSON
+GET http://localhost:8080/api/lost-items
+
+
+### 3. 按类型查询
+GET http://localhost:8080/api/lost-items?type=电子
+
+
+### 4. 按关键字和最高悬赏金额查询
+GET http://localhost:8080/api/lost-items?keyword=U盘&maxReward=30
+
+
+### 5. 拦截器测试：不带 Token，应该被拒绝
+POST http://localhost:8080/api/lost-items
+Content-Type: application/json
+
+{
+  "title": "测试物品",
+  "type": "其他",
+  "location": "测试地点",
+  "contact": "13800000000",
+  "reward": 1.00
+}
+
+
+### 6. 新增测试：带 Token，应该新增成功
+POST http://localhost:8080/api/lost-items
+Content-Type: application/json
+Token: 24053010204
+
+{
+  "title": "我的黑色U盘",
+  "type": "电子",
+  "location": "机房402",
+  "contact": "13812345678",
+  "reward": 20.00
+}
+
+
+### 7. 业务异常测试：标题含有违规词，应该由全局异常处理返回 JSON
+POST http://localhost:8080/api/lost-items
+Content-Type: application/json
+Token: 24053010204
+
+{
+  "title": "代考服务",
+  "type": "其他",
+  "location": "教学楼",
+  "contact": "13812345678",
+  "reward": 50.00
+}
+
+
+### 8. 全局异常测试：故意触发 RuntimeException
+GET http://localhost:8080/api/lost-items/boom
+
+
+### 9. 标记已找回测试：把 1 改成实际存在的 id
+PUT http://localhost:8080/api/lost-items/1/found
+Token: 24053010204
+
+
+### 10. 删除测试：把 1 改成实际存在的 id
+DELETE http://localhost:8080/api/lost-items/1
+Token: 24053010204
